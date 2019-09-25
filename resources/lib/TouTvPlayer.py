@@ -83,17 +83,6 @@ def playVideoExtra( PID, pKEY, startoffset=None, listitem_in=None ):
     listitem = listitem_in
 
     data = getVideoExtra( PID )
-    print '$$$$$$$$$$$$$$$$$$QUALITYYYYYYYYYYYYYYYYY'
-    print data['quality']
-    index = xbmcgui.Dialog().select('Select quality', list(map(lambda x: x['name'], data['quality'])))
-    print '$$$$$$$$$$$$$$$$$$INDEXXXXX'
-    print index
-    
-    if listitem is None:
-        listitem = xbmcgui.ListItem( infoLabels[ "title" ], '', "DefaultVideo.png", g_thumbnail )
-        listitem.setInfo( "Video", infoLabels )
-
-    listitem.setProperty( "startoffset", str( startoffset ) ) #in second
     
     if data['url'] is None:
         return
@@ -104,9 +93,26 @@ def playVideoExtra( PID, pKEY, startoffset=None, listitem_in=None ):
         DRM = 'com.widevine.alpha'
         BEARER  = data['widevineAuthToken']
 
+        # Test que les sources sont disponibles
         # Force filter 7000 et le bon format
-        url = re.sub(r'\(filter=\d+\)', '(filter=7000,format=mpd-time-csf)', data['url'])
+        # url = re.sub(r'\(filter=\d+\)', '(filter='+ str(selectedQuality['filter']) + ',format=mpd-time-csf)', data['url'])        
+
+        choice = xbmcgui.Dialog().select('Qualite', list(map(lambda x: x['name'], data['quality'])))
+        if choice == -1:
+            return
+
+        selectedQuality = data['quality'][choice]
+        print 'Selected stream quality: '+ selectedQuality['name']
+
+        # Force filter 7000 et le bon format
+        url = re.sub(r'\(filter=\d+\)', '(filter='+ str(selectedQuality['filter']) + ',format=mpd-time-csf)', data['url'])
         
+        if listitem is None:
+            listitem = xbmcgui.ListItem( infoLabels[ "title" ]+'(' + selectedQuality['name'] + ')', '', "DefaultVideo.png", g_thumbnail )
+            listitem.setInfo( "Video", infoLabels )
+
+        listitem.setProperty( "startoffset", str( startoffset ) ) #in second
+
         is_helper = inputstreamhelper.Helper(PROTOCOL, drm=DRM)
         if is_helper.check_inputstream():
             listitem.setProperty('path', url)
