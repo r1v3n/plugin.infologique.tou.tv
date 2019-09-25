@@ -6,6 +6,7 @@ import xbmc
 import xbmcgui
 import scraper
 import inputstreamhelper
+import urllib2
 
 from scraper import getVideo
 from scraper import getVideoExtra
@@ -95,6 +96,11 @@ def playVideoExtra( PID, pKEY, startoffset=None, listitem_in=None ):
 
         # Test que les sources sont disponibles
         # Force filter 7000 et le bon format
+        # urllib2.urlopen('http://python.org/').getcode() != 202
+        # for quality in data['quality']:
+        #     testurl = re.sub(r'\(filter=\d+\)', '(filter='+ str(quality['filter']) + ',format=mpd-time-csf)', data['url'])
+        #     if urllib2.urlopen(testurl).getcode() != 202:
+
         # url = re.sub(r'\(filter=\d+\)', '(filter='+ str(selectedQuality['filter']) + ',format=mpd-time-csf)', data['url'])        
 
         choice = xbmcgui.Dialog().select('Qualite', list(map(lambda x: x['name'], data['quality'])))
