@@ -83,6 +83,11 @@ def playVideoExtra( PID, pKEY, startoffset=None, listitem_in=None ):
     listitem = listitem_in
 
     data = getVideoExtra( PID )
+    print '$$$$$$$$$$$$$$$$$$QUALITYYYYYYYYYYYYYYYYY'
+    print data['quality']
+    index = xbmcgui.Dialog().select('Select quality', list(map(lambda x: x['name'], data['quality'])))
+    print '$$$$$$$$$$$$$$$$$$INDEXXXXX'
+    print index
     
     if listitem is None:
         listitem = xbmcgui.ListItem( infoLabels[ "title" ], '', "DefaultVideo.png", g_thumbnail )

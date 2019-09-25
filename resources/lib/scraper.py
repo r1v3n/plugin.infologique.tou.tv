@@ -121,7 +121,10 @@ def getVideoExtra( PID, refresh=True ):
         
     #content = GET_HTML_AUTH('https://services.radio-canada.ca/media/validation/v2/?appCode=toutv&deviceType=ioscenc&connectionType=hd&idMedia=' + IdMedia + '&claims=' + claims + '&output=json')
     #content = json.loads(content)
-        
+
+    quality = []
+    if content['bitrates'] != None:
+        quality = list(map(lambda x: { 'name': x['lines'], 'filter': x['bitrate']}, content['bitrates']))
 
     if content['message'] is not None:
         xbmcgui.Dialog().ok("Le serveur vous parle",content['message'])
@@ -131,7 +134,7 @@ def getVideoExtra( PID, refresh=True ):
     #    url = content['url'].replace(",.mp4",",3000,.mp4").replace(",3000,3000",",3000")
     #    #print url
 
-    return {'url':content['url'],'IdMedia': IdMedia, 'emission': emission, 'isDRM' : isDRM, 'widevineLicenseUrl' : widevineLicenseUrl, 'widevineAuthToken' : widevineAuthToken }
+    return {'url':content['url'],'IdMedia': IdMedia, 'emission': emission, 'isDRM' : isDRM, 'widevineLicenseUrl' : widevineLicenseUrl, 'widevineAuthToken' : widevineAuthToken, 'quality' : quality }
 
 def getDate( jsondate ):
     #not really used
